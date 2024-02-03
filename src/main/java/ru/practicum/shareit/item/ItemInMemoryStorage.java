@@ -23,7 +23,7 @@ public class ItemInMemoryStorage implements ItemStorage {
     public Item addItem(Item item) {
         log.debug("Add item to storage");
         Long itemId = itemRepository.keySet().stream().filter(k -> k.equals(item.getId())).findFirst().orElse(null);
-        if (itemId != null ) {
+        if (itemId != null) {
             log.error("adding item already exists!");
             throw new ValidationException("User validation error");
         }
