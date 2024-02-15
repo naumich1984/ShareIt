@@ -1,29 +1,25 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.UserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component("ItemInMemoryStorage")
-@RequiredArgsConstructor
 @Slf4j
 public class ItemInMemoryStorage implements ItemStorage {
 
     private Map<Long, Item> itemRepository = new HashMap<>();
     private Long itemSequence = 1L;
-    private UserService userService;
 
     @Override
     public Item addItem(Item item) {
         log.debug("Add item to storage");
         Long itemId = itemRepository.keySet().stream().filter(k -> k.equals(item.getId())).findFirst().orElse(null);
-        if (itemId != null ) {
+        if (itemId != null) {
             log.error("adding item already exists!");
             throw new ValidationException("User validation error");
         }
