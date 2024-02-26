@@ -11,6 +11,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -43,7 +44,7 @@ public class BookingErrorHandler {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(out));
-        String stackTrace = out.toString();
+        String stackTrace = out.toString(Charset.defaultCharset());
 
         return new ErrorResponse(e.getMessage(), stackTrace);
     }
