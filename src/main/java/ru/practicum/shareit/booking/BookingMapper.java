@@ -17,15 +17,12 @@ public class BookingMapper {
                 new BookingDtoInfo.ItemDto(booking.getItem().getId(), booking.getItem().getName()));
     }
 
-    public static Booking toBooking(BookingDto bookingDto, Long userId) {
-        return new Booking(
-                null,
-                bookingDto.getStart(),
-                bookingDto.getEnd(),
-                new Item(bookingDto.getItemId(), null, null, null,
-                        new User(userId, null, null), null),
-                new User(userId, null, null),
-                BookingStatus.WAITING
-        );
+    public static Booking toBooking(BookingDto bookingDto, Item item, User user) {
+        return Booking.builder()
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
+                .item(item)
+                .booker(user)
+                .status(BookingStatus.WAITING).build();
     }
 }

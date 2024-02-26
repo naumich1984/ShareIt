@@ -49,9 +49,7 @@ public class BookingController {
         if (userId.equals(item.getOwner().getId())) {
             throw new NotFoundException("User is owner");
         }
-        Booking booking = BookingMapper.toBooking(bookingDto, userId);
-        booking.setBooker(user);
-        booking.setItem(item);
+        Booking booking = BookingMapper.toBooking(bookingDto, item, user);
 
         return ResponseEntity.ok(BookingMapper.toBookingDto(bookingService.addBooking(booking, userId)));
     }
