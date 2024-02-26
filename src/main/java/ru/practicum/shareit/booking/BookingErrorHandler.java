@@ -44,7 +44,7 @@ public class BookingErrorHandler {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(out));
-        String stackTrace = out.toString(Charset.defaultCharset());
+        String stackTrace = out.toString(Charset.forName("UTF-8"));
 
         return new ErrorResponse(e.getMessage(), stackTrace);
     }
