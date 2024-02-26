@@ -15,7 +15,7 @@ public enum BookingStatus {
 
             return BookingStatus.ALL;
         }
-        for(BookingStatus value : BookingStatus.values()) {
+        for (BookingStatus value : BookingStatus.values()) {
             if (value.name().equals(state)) {
 
                 return value;

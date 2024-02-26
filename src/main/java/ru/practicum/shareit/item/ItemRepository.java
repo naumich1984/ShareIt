@@ -19,8 +19,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " join it.owner as u " +
             " where it.available = true " +
             " and (" +
-            "  lower(it.description) like concat('%', concat(lower(?1), '%')) " +
-            "  or lower(it.name) like concat('%', concat(lower(?1), '%'))" +
-            ") " )
+            "  lower(it.description) like concat('%', lower(?1), '%') " +
+            "  or lower(it.name) like concat('%', lower(?1), '%') " +
+            ") ")
     List<Item> findAllBySearch(String pattern, Long userId);
 }

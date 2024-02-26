@@ -62,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
         Booking nextBooking;
         List<ItemInfoDto> itemInfoDtos = new ArrayList<>();
         List<Item> items = itemRepository.findAllByOwner(userId);
-        for(Item item : items) {
+        for (Item item : items) {
             lastBooking  = null;
             nextBooking = null;
             List<BookingStatus> workedStatuses = List.of(BookingStatus.APPROVED, BookingStatus.WAITING);
