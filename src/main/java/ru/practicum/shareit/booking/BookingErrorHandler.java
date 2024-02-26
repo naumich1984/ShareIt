@@ -43,8 +43,8 @@ public class BookingErrorHandler {
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        e.printStackTrace(new PrintStream(out));
-        String stackTrace = out.toString(Charset.forName("UTF-8"));
+        e.printStackTrace(new PrintStream(out, true, Charset.defaultCharset()));
+        String stackTrace = out.toString(Charset.defaultCharset());
 
         return new ErrorResponse(e.getMessage(), stackTrace);
     }
