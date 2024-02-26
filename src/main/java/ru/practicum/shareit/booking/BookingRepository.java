@@ -27,7 +27,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllBookingByOwnerIdAndByStatusPast(Long userId, BookingStatus name);
 
     //CURRENT OWNER
-    @Query("select b from Booking b where b.item.owner = ?1 and b.start < now() and b.end > now() order by b.start desc ")
+    @Query("select b from Booking b where b.item.owner.id = ?1 and b.start < now() and b.end > now() order by b.start desc ")
     List<Booking> findAllBookingByOwnerIdAndByStatusCurrent(Long userId);
 
     //FUTURE OWNER
@@ -63,4 +63,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.start >= now() and b.end > now() and b.item.id = ?1 " +
             " and b.status in ?2 order by b.start ")
     Page<Booking> findNextItemBooking(Long itemId, List<BookingStatus> workedStatuses, Pageable pageable);
+
+    @Query("select b from Booking b where b.end <= now() and b.item.id = ?1 and b.booker.id = ?2 and b.status = ?3 ")
+    Page<Booking> findLastFinishedBookingByItemIdAndUserId(Long itemId, Long userId, BookingStatus name, Pageable pageable);
+
 }

@@ -1,11 +1,14 @@
 package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,7 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                comments == null ? null : comments
+                comments == null ? Collections.EMPTY_LIST : comments
                         .stream()
                         .map(comment -> ItemCommentToCommentDto(comment))
                         .collect(Collectors.toList()),
@@ -50,6 +53,20 @@ public class ItemMapper {
 
         return new ItemInfoDto.CommentDto(comment.getId(), comment.getText(),
                 comment.getAuthor().getName(), comment.getCreated());
+    }
+
+    public static Comment toComment(CommentDto commentDto, Item item, User user) {
+
+        return new Comment(null,
+                commentDto.getText(),
+                new Item(item.getId(), null, null, null, null, null),
+                user,
+                LocalDateTime.now());
+    }
+
+    public static CommentDto toCommentDto(Comment comment) {
+
+        return new CommentDto(comment.getId(), comment.getText(),comment.getAuthor().getName(), comment.getCreated());
     }
 
 }

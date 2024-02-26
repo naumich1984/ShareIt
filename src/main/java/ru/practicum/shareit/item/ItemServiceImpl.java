@@ -9,9 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
+import ru.practicum.shareit.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -98,8 +102,9 @@ public class ItemServiceImpl implements ItemService {
                 nextBooking = nextBookingPage.getContent().get(0);
             }
         }
+        List<Comment> commentList = commentRepository.findAllCommentsByItemId(itemId);
 
-        return ItemMapper.toItemInfoDto(itemO.get(), null, lastBooking, nextBooking);
+        return ItemMapper.toItemInfoDto(itemO.get(), commentList, lastBooking, nextBooking);
     }
 
     @Override
@@ -116,6 +121,19 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getItemsBySearch(String pattern, Long userId) {
 
         return itemRepository.findAllBySearch(pattern, userId);
+    }
+
+    @Override
+    public Comment addCommentItem(CommentDto comment, Long itemId, User user) {
+        Pageable firstInPage = PageRequest.of(0, 1);
+        Page<Booking> bookingPage = bookingRepository.findLastFinishedBookingByItemIdAndUserId(itemId, user.getId(),
+                BookingStatus.APPROVED, firstInPage);
+        if (bookingPage.isEmpty()) {
+           throw new BadRequestException("Booking for comment not found");
+        }
+        Booking booking = bookingPage.getContent().get(0);
+
+        return  commentRepository.save(ItemMapper.toComment(comment, booking.getItem(), user));
     }
 
 }
