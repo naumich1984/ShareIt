@@ -1,3 +1,3 @@
-# java-shareit
+# Shareit
 
 # Template repository for Shareit project.
