@@ -1,13 +1,10 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.BadRequestException;
-import ru.practicum.shareit.exception.ErrorResponse;
-import ru.practicum.shareit.exception.NotFoundException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -16,16 +13,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
-public class BookingErrorHandler {
-
-    @ExceptionHandler
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Not found!")
-    public Map<String, String> handleNotFoundException(final NotFoundException e) {
-        log.debug("Ошибка:{}", e.getMessage());
-        log.debug("stacktrace ошибки:{}", e.getStackTrace());
-
-        return Map.of("Ошибка:", e.getMessage());
-    }
+public class ApplicationErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "BadRequestException")
@@ -47,5 +35,32 @@ public class BookingErrorHandler {
         String stackTrace = out.toString(Charset.defaultCharset());
 
         return new ErrorResponse(e.getMessage(), stackTrace);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.CONFLICT, reason = "ValidationException")
+    public Map<String, String> handleValidationException(final ValidationException e) {
+        log.debug("Ошибка валидации:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка валидации", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "NullPointerException")
+    public Map<String, String> handleInternalServerException(final NullPointerException e) {
+        log.debug("Ошибка сервера:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка сервера", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "NotFoundException")
+    public Map<String, String> handleNotFoundException(final NotFoundException e) {
+        log.debug("Ошибка:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка:", e.getMessage());
     }
 }

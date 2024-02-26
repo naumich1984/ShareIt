@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,9 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    @Value("${booking.statuses.worked}")
+    private final List<BookingStatus> workedStatuses;
+
 
     @Override
     @Transactional
@@ -63,9 +67,8 @@ public class ItemServiceImpl implements ItemService {
         List<ItemInfoDto> itemInfoDtos = new ArrayList<>();
         List<Item> items = itemRepository.findAllByOwner(userId);
         for (Item item : items) {
-            lastBooking  = null;
+            lastBooking = null;
             nextBooking = null;
-            List<BookingStatus> workedStatuses = List.of(BookingStatus.APPROVED, BookingStatus.WAITING);
             Pageable firstInPage = PageRequest.of(0, 1);
             Page<Booking> lastBookingPage = bookingRepository.findLastItemBooking(item.getId(), workedStatuses, firstInPage);
             Page<Booking> nextBookingPage = bookingRepository.findNextItemBooking(item.getId(), workedStatuses, firstInPage);
@@ -84,14 +87,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemInfoDto getItemWithBookings(Long itemId, Long userId) {
-        Booking lastBooking  = null;
+        Booking lastBooking = null;
         Booking nextBooking = null;
         Optional<Item> itemO = itemRepository.findById(itemId);
         if (!itemO.isPresent()) {
             throw new NotFoundException("Item not found!");
         }
         if (itemO.get().getOwner().getId().equals(userId)) {
-            List<BookingStatus> workedStatuses = List.of(BookingStatus.APPROVED, BookingStatus.WAITING);
             Pageable firstInPage = PageRequest.of(0, 1);
             Page<Booking> lastBookingPage = bookingRepository.findLastItemBooking(itemId, workedStatuses, firstInPage);
             Page<Booking> nextBookingPage = bookingRepository.findNextItemBooking(itemId, workedStatuses, firstInPage);
@@ -129,11 +131,11 @@ public class ItemServiceImpl implements ItemService {
         Page<Booking> bookingPage = bookingRepository.findLastFinishedBookingByItemIdAndUserId(itemId, user.getId(),
                 BookingStatus.APPROVED, firstInPage);
         if (bookingPage.isEmpty()) {
-           throw new BadRequestException("Booking for comment not found");
+            throw new BadRequestException("Booking for comment not found");
         }
         Booking booking = bookingPage.getContent().get(0);
 
-        return  commentRepository.save(ItemMapper.toComment(comment, booking.getItem(), user));
+        return commentRepository.save(ItemMapper.toComment(comment, booking.getItem(), user));
     }
 
 }

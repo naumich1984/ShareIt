@@ -13,7 +13,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " where u.id = ?1 ")
     List<Item> findAllByOwner(Long userId);
 
-
     @Query(" select it " +
             " from Item as it " +
             " join it.owner as u " +

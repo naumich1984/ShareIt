@@ -58,7 +58,7 @@ public class ItemMapper {
 
         return new Comment(null,
                 commentDto.getText(),
-                new Item(item.getId(), null, null, null, null, null),
+                Item.builder().id(item.getId()).build(),
                 user,
                 LocalDateTime.now());
     }
