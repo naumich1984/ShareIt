@@ -1,15 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ItemDto {
+    private Long id;
     @NotBlank(message = "name should not be blank")
     private String name;
     @NotBlank(message = "description should not be blank")

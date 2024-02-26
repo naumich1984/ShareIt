@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
+import ru.practicum.shareit.booking.BookingStatus;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Future;
@@ -12,13 +13,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class BookingDto {
+public class BookingDtoInfo {
 
-    private Long itemId;
+    private Long id;
     @FutureOrPresent
     private LocalDateTime start;
     @Future
     private LocalDateTime end;
+    private BookingStatus status;
+    private UserDto booker;
+    private ItemDto item;
 
     @AssertTrue
     boolean isValidStartEndDates() {
@@ -27,5 +31,20 @@ public class BookingDto {
         }
 
         return false;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class UserDto {
+        Long id;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class ItemDto {
+        Long id;
+        String name;
     }
 }
