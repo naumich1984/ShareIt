@@ -1,12 +1,10 @@
 package ru.practicum.shareit.booking;
 
-import ru.practicum.shareit.exception.NotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
