@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User saveUser(UserDto userDto) {
+        log.debug("saveUser");
 
         return userRepository.save(UserMapper.toUser(userDto));
     }
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User updateUser(UserDto userDto, Long userId) {
+        log.debug("updateUser");
         Optional<User> userO = userRepository.findById(userId);
         if (!userO.isPresent()) {
             throw new NotFoundException("User not found!");
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public int deleteUser(Long userId) {
+        log.debug("deleteUser");
         userRepository.deleteById(userId);
 
         return 0;
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long userId) {
+        log.debug("getUser");
         Optional<User> userO = userRepository.findById(userId);
         if (!userO.isPresent()) {
              throw new NotFoundException("User not found!");
@@ -59,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
+        log.debug("getAllUsers");
         List<User> users = userRepository.findAll();
 
         return users;

@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +18,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
-    private final UserService userService;
 
     @PostMapping("/items/{itemId}/comment")
     public ResponseEntity<CommentDto> addCommentItem(@RequestBody @Valid CommentDto commentDto,
@@ -29,9 +25,9 @@ public class ItemController {
                                                   @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         log.debug("POST /items/{itemId}/comment");
         log.debug("X-Sharer-User-Id: {}", userId);
-        User user = userService.getUser(userId);
 
-        return ResponseEntity.ok(ItemMapper.toCommentDto(itemService.addCommentItem(commentDto, itemId, user)));
+
+        return ResponseEntity.ok(ItemMapper.toCommentDto(itemService.addCommentItem(commentDto, itemId, userId)));
     }
 
     @PostMapping("/items")
@@ -39,7 +35,6 @@ public class ItemController {
                                         @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         log.debug("POST /items request");
         log.debug("X-Sharer-User-Id: {}", userId);
-        userService.getUser(userId);
 
         return ResponseEntity.ok(ItemMapper.toItemDto(itemService.addItem(itemDto, userId)));
     }
@@ -78,9 +73,6 @@ public class ItemController {
         log.debug("GET /items/search?text={text}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("text: {}", text);
-        if (text.isBlank()) {
-            return ResponseEntity.ok(Collections.EMPTY_LIST);
-        }
 
         return ResponseEntity.ok(itemService.getItemsBySearch(text, userId)
                 .stream()

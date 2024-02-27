@@ -17,8 +17,10 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final UserService userService;
     @Value("${booking.statuses.worked}")
     private final List<BookingStatus> workedStatuses;
 
@@ -38,6 +41,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item addItem(ItemDto itemDto, Long userId) {
+        log.debug("addItem");
+        userService.getUser(userId);
 
         return itemRepository.save(ItemMapper.toItem(itemDto, userId));
     }
@@ -45,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Item updateItem(ItemDto itemDto, Long itemId, Long userId) {
+        log.debug("updateItem");
         Optional<Item> itemO = itemRepository.findById(itemId);
         if (!itemO.isPresent()) {
             throw new NotFoundException("Item not found!");
@@ -62,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemInfoDto> getAllUserItems(Long userId) {
+        log.debug("getAllUserItems");
         Booking lastBooking;
         Booking nextBooking;
         List<ItemInfoDto> itemInfoDtos = new ArrayList<>();
@@ -87,6 +94,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemInfoDto getItemWithBookings(Long itemId, Long userId) {
+        log.debug("getItemWithBookings");
         Booking lastBooking = null;
         Booking nextBooking = null;
         Optional<Item> itemO = itemRepository.findById(itemId);
@@ -111,6 +119,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItem(Long itemId, Long userId) {
+        log.debug("getItem");
         Optional<Item> itemO = itemRepository.findById(itemId);
         if (!itemO.isPresent()) {
             throw new NotFoundException("Item not found!");
@@ -121,14 +130,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsBySearch(String pattern, Long userId) {
+        log.debug("getItemsBySearch");
+        if (pattern.isBlank()) {
+            return Collections.EMPTY_LIST;
+        }
 
         return itemRepository.findAllBySearch(pattern, userId);
     }
 
     @Override
-    public Comment addCommentItem(CommentDto comment, Long itemId, User user) {
+    public Comment addCommentItem(CommentDto comment, Long itemId, Long userId) {
+        log.debug("addCommentItem");
+        User user = userService.getUser(userId);
+
         Pageable firstInPage = PageRequest.of(0, 1);
-        Page<Booking> bookingPage = bookingRepository.findLastFinishedBookingByItemIdAndUserId(itemId, user.getId(),
+        Page<Booking> bookingPage = bookingRepository.findLastFinishedBookingByItemIdAndUserId(itemId, userId,
                 BookingStatus.APPROVED, firstInPage);
         if (bookingPage.isEmpty()) {
             throw new BadRequestException("Booking for comment not found");
@@ -137,5 +153,4 @@ public class ItemServiceImpl implements ItemService {
 
         return commentRepository.save(ItemMapper.toComment(comment, booking.getItem(), user));
     }
-
 }
