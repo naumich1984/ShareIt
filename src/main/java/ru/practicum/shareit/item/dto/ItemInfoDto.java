@@ -26,8 +26,8 @@ public class ItemInfoDto {
     @AllArgsConstructor
     @ToString
     public static class BookingDto {
-        Long id;
-        Long bookerId;
+        private Long id;
+        private Long bookerId;
     }
 
     @Getter
@@ -36,9 +36,9 @@ public class ItemInfoDto {
     @AllArgsConstructor
     @ToString
     public static class CommentDto {
-        Long id;
-        String text;
-        String authorName;
-        LocalDateTime created;
+        private Long id;
+        private String text;
+        private String authorName;
+        private LocalDateTime created;
     }
 }

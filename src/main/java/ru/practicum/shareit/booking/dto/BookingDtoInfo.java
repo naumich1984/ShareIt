@@ -25,14 +25,14 @@ public class BookingDtoInfo {
     @Setter
     @AllArgsConstructor
     public static class UserDto {
-        Long id;
+        private Long id;
     }
 
     @Getter
     @Setter
     @AllArgsConstructor
     public static class ItemDto {
-        Long id;
-        String name;
+        private Long id;
+        private String name;
     }
 }
