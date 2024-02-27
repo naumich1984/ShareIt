@@ -29,6 +29,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking addBooking(BookingDto bookingDto, Long userId) {
+        log.debug("addBooking");
         Optional<Item> itemO = Optional.ofNullable(itemService.getItem(bookingDto.getItemId(), userId));
         if (!itemO.isPresent()) {
             throw new NotFoundException("Item not found");
@@ -52,6 +53,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking approveBooking(Long bookingId, Boolean approved, Long userId) {
+        log.debug("approveBooking");
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -76,6 +78,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking getBooking(long bookingId, Long userId) {
+        log.debug("getBooking");
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -88,6 +91,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public List<Booking> getAllUserBooking(String state, Long userId) {
+        log.debug("getAllUserBooking");
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -124,6 +128,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public List<Booking> getAllBookingsUserItems(String state, Long userId) {
+        log.debug("getAllBookingsUserItems");
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
