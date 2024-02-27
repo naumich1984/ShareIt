@@ -142,7 +142,6 @@ public class ItemServiceImpl implements ItemService {
     public Comment addCommentItem(CommentDto comment, Long itemId, Long userId) {
         log.debug("addCommentItem");
         User user = userService.getUser(userId);
-
         Pageable firstInPage = PageRequest.of(0, 1);
         Page<Booking> bookingPage = bookingRepository.findLastFinishedBookingByItemIdAndUserId(itemId, userId,
                 BookingStatus.APPROVED, firstInPage);

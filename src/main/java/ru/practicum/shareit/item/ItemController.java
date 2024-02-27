@@ -26,7 +26,6 @@ public class ItemController {
         log.debug("POST /items/{itemId}/comment");
         log.debug("X-Sharer-User-Id: {}", userId);
 
-
         return ResponseEntity.ok(ItemMapper.toCommentDto(itemService.addCommentItem(commentDto, itemId, userId)));
     }
 
