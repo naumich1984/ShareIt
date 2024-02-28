@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,18 +17,26 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> saveNewUser(@RequestBody @Valid UserDto userDto) {
         log.debug("POST /users request");
 
-        return ResponseEntity.ok(userService.addUser(userDto));
+        return ResponseEntity.ok(UserMapper.toUserDto(userService.saveUser(userDto)));
     }
 
     @PatchMapping("/users/{userId}")
-    public ResponseEntity<User> updateUser(@RequestBody UserDto userDto, @PathVariable Long userId) {
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, @PathVariable Long userId) {
         log.debug("PATCH /users request");
         log.debug("userId: {}", userId);
 
-        return ResponseEntity.ok(userService.updateUser(userDto, userId));
+        return ResponseEntity.ok(UserMapper.toUserDto(userService.updateUser(userDto, userId)));
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable long userId) {
+        log.debug("GET /users/{id} request");
+        log.debug("id: {}", userId);
+
+        return ResponseEntity.ok(UserMapper.toUserDto(userService.getUser(userId)));
     }
 
     @DeleteMapping("/users/{userId}")
@@ -39,17 +48,12 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
-
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable long userId) {
-        log.debug("GET /users/{id} request");
-        log.debug("id: {}", userId);
-
-        return ResponseEntity.ok(userService.getUser(userId));
+        return ResponseEntity.ok(userService.getAllUsers()
+                .stream()
+                .map(user -> UserMapper.toUserDto(user))
+                .collect(Collectors.toList()));
     }
 }

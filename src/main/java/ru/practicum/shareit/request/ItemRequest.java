@@ -1,21 +1,33 @@
 package ru.practicum.shareit.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Data
+@Entity
+@Table(name = "requests")
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ItemRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "request_id")
     private Long id;
-    @Size(max = 32000, message = "description length should be less 32000 symbols")
+
+    @Column(name = "description", nullable = false, length = 32000)
     private String description;
-    @NotNull
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User requestor;
-    @NotNull
+
+    @Column(name = "created")
     private Timestamp created;
 }
