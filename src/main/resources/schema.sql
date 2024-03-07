@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS items (
   user_id BIGINT NOT NULL,
   request_id BIGINT,
   CONSTRAINT pk_item PRIMARY KEY (item_id),
-  CONSTRAINT fk_items_to_users FOREIGN KEY(user_id) REFERENCES users(user_id),
-  CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(request_id),
+  CONSTRAINT fk_items_to_users FOREIGN KEY(user_id) REFERENCES users(user_id) on delete cascade,
+  CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(request_id) on delete cascade,
   CONSTRAINT uq_user_item_name UNIQUE(user_id, name)
 );
 

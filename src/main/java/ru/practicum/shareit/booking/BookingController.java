@@ -3,11 +3,13 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoInfo;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class BookingController {
 
     private final BookingService bookingService;
@@ -52,12 +55,16 @@ public class BookingController {
 
     @GetMapping("/bookings")
     public ResponseEntity<List<BookingDtoInfo>> getAllUserBooking(@RequestParam(value = "state", required = false) String state,
-                                                                  @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                                  @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                                                                  @RequestParam(required = false) @Min(0) Integer from,
+                                                                  @RequestParam(required = false) @Min(1) Integer size) {
         log.debug("GET /bookings?state={state}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("BookingStatus: {}", state);
+        log.debug("from: {}", from);
+        log.debug("size: {}", size);
 
-        return ResponseEntity.ok(bookingService.getAllUserBooking(state, userId)
+        return ResponseEntity.ok(bookingService.getAllUserBooking(state, userId, from, size)
                 .stream()
                 .map(booking -> BookingMapper.toBookingDto(booking))
                 .collect(Collectors.toList()));
@@ -65,12 +72,16 @@ public class BookingController {
 
     @GetMapping("/bookings/owner")
     public ResponseEntity<List<BookingDtoInfo>> getAllBookingsUserItems(@RequestParam(value = "state", required = false) String state,
-                                                                  @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                                        @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                                                                        @RequestParam(required = false) @Min(0) Integer from,
+                                                                        @RequestParam(required = false) @Min(1) Integer size) {
         log.debug("GET /bookings/owner?state={state}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("BookingStatus: {}", state);
+        log.debug("from: {}", from);
+        log.debug("size: {}", size);
 
-        return ResponseEntity.ok(bookingService.getAllBookingsUserItems(state, userId)
+        return ResponseEntity.ok(bookingService.getAllBookingsUserItems(state, userId, from, size)
                 .stream()
                 .map(booking -> BookingMapper.toBookingDto(booking))
                 .collect(Collectors.toList()));

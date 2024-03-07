@@ -2,6 +2,7 @@ package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,5 +63,14 @@ public class ApplicationErrorHandler {
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
         return Map.of("Ошибка:", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "MethodArgumentNotValidException")
+    public Map<String, String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        log.debug("Ошибка сервера:{}", e.getMessage());
+        log.debug("stacktrace ошибки:{}", e.getStackTrace());
+
+        return Map.of("Ошибка сервера", e.getMessage());
     }
 }

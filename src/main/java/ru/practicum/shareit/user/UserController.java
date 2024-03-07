@@ -51,9 +51,6 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userService.getAllUsers()
-                .stream()
-                .map(user -> UserMapper.toUserDto(user))
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
