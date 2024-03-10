@@ -80,7 +80,7 @@ class UserControllerTest {
     void getAllUsers_whenInvoked_thenResponseStatusOkWithUsersCollectionInBody() {
         List<UserDto> expectedUsers = List.of(expectedDtoUser);
         Mockito.when(userService.getAllUsers()).thenReturn(expectedUsers);
-                
+
         ResponseEntity<List<UserDto>> response = userController.getAllUsers();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

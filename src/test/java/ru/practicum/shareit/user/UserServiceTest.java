@@ -97,7 +97,7 @@ class UserServiceTest {
         assertEquals(newUser.getName(), savedUser.getName());
         assertEquals(newUser.getEmail(), savedUser.getEmail());
     }
-    
+
     @Test
     void deleteUser_whenInvoked_thenReturnedIntegerValue() {
         Integer expectedResult = 0;
