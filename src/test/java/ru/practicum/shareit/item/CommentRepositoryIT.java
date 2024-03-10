@@ -1,11 +1,13 @@
 package ru.practicum.shareit.item;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
@@ -19,17 +21,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class ItemRepositoryIT {
+class CommentRepositoryIT {
 
+    @Autowired
+    private CommentRepository commentRepository;
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private ItemRequestRepository itemRequestRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         User user = User.builder()
                 .name("user1")
                 .email("user1@email.ru")
@@ -51,37 +57,28 @@ class ItemRepositoryIT {
                 .request(itemRequest)
                 .build();
         itemRepository.save(item);
+
+        Booking booking = Booking.builder()
+                .item(item)
+                .booker(user)
+                .status(BookingStatus.APPROVED)
+                .build();
+
+        Comment comment = Comment.builder()
+                .text("comment1")
+                .author(user)
+                .item(item)
+                .created(LocalDateTime.now())
+                .build();
+        commentRepository.save(comment);
     }
 
     @Test
-    void findAllByRequestIdList() {
-        List<Long> requestIds = List.of(1L);
-        List<Item> actualItems = itemRepository.findAllByRequestIdList(requestIds);
+    void findAllCommentsByItemId() {
+        Long expectedItemId = 1L;
+        List<Comment> actualComments = commentRepository.findAllCommentsByItemId(expectedItemId);
 
-        assertTrue(!actualItems.isEmpty());
-        assertEquals(1, actualItems.size());
-    }
-
-    @Test
-    void findAllByOwner() {
-        Long userId = 1L;
-        List<Item> actualItems = itemRepository.findAllByOwner(userId);
-
-        assertTrue(!actualItems.isEmpty());
-        assertEquals(1, actualItems.size());
-    }
-
-    @Test
-    void findAllBySearch() {
-        Long userId = 1L;
-        List<Item> actualItems = itemRepository.findAllBySearch("description1", userId);
-
-        assertTrue(!actualItems.isEmpty());
-        assertEquals(1, actualItems.size());
-    }
-
-    @AfterEach
-    public void deleteItems() {
-        itemRepository.deleteAll();
+        assertTrue(!actualComments.isEmpty());
+        assertEquals(1, actualComments.size());
     }
 }

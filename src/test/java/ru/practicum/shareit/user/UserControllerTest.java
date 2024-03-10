@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

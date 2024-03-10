@@ -34,6 +34,7 @@ public class ItemController {
                                         @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         log.debug("POST /items request");
         log.debug("X-Sharer-User-Id: {}", userId);
+        log.debug("itemDto.getId(): {}", itemDto.getId());
 
         return ResponseEntity.ok(ItemMapper.toItemDto(itemService.addItem(itemDto, userId)));
     }
