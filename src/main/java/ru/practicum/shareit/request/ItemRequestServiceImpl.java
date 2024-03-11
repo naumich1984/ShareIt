@@ -63,7 +63,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestInfoDto> getAllOtherUsersRequests(Long userId, Integer from, Integer size) {
         log.debug("getAllOtherUsersRequests");
         from = from == null ? 0 : from;
-        size = size == null ? sizeItemRequestPage : size;
+        size = size == null ? 1 : size;
         Pageable pageable = PageRequest.of(from, size);
         User user = userService.getUser(userId);
         Page<ItemRequest> itemRequestList = itemRequestRepository.findAllRequestWithItemsByNotUserId(userId, pageable);
