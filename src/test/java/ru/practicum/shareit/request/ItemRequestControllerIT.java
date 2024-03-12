@@ -117,8 +117,8 @@ class ItemRequestControllerIT {
     @SneakyThrows
     @Test
     void getAllUserRequests_whenUserIdValid_thenReturnedItemRequestsList() {
-        List<ItemRequestInfoDto> ItemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
-        when(itemRequestService.getAllUserRequests(expectedUserId)).thenReturn(ItemRequestInfoDtoList);
+        List<ItemRequestInfoDto> itemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
+        when(itemRequestService.getAllUserRequests(expectedUserId)).thenReturn(itemRequestInfoDtoList);
 
         String result = mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", expectedUserId))
@@ -127,7 +127,7 @@ class ItemRequestControllerIT {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(ItemRequestInfoDtoList), result);
+        assertEquals(objectMapper.writeValueAsString(itemRequestInfoDtoList), result);
         verify(itemRequestService).getAllUserRequests(expectedUserId);
     }
 
@@ -143,8 +143,8 @@ class ItemRequestControllerIT {
     @SneakyThrows
     @Test
     void getAllUserRequests_whenUserIdNotFound_thenExceptionThrown() {
-        List<ItemRequestInfoDto> ItemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
-        when(itemRequestService.getAllUserRequests(expectedUserId)).thenReturn(ItemRequestInfoDtoList);
+        List<ItemRequestInfoDto> itemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
+        when(itemRequestService.getAllUserRequests(expectedUserId)).thenReturn(itemRequestInfoDtoList);
 
         String result = mockMvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", expectedUserId))
@@ -153,15 +153,15 @@ class ItemRequestControllerIT {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(ItemRequestInfoDtoList), result);
+        assertEquals(objectMapper.writeValueAsString(itemRequestInfoDtoList), result);
         verify(itemRequestService).getAllUserRequests(expectedUserId);
     }
 
     @SneakyThrows
     @Test
     void getAllOtherUsersRequests_whenUserValid_thenReturnedItemRequestsList() {
-        List<ItemRequestInfoDto> ItemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
-        when(itemRequestService.getAllOtherUsersRequests(expectedUserId, 0, 1)).thenReturn(ItemRequestInfoDtoList);
+        List<ItemRequestInfoDto> itemRequestInfoDtoList = List.of(expectedItemRequestInfoDto);
+        when(itemRequestService.getAllOtherUsersRequests(expectedUserId, 0, 1)).thenReturn(itemRequestInfoDtoList);
 
         String result = mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", expectedUserId)
@@ -172,7 +172,7 @@ class ItemRequestControllerIT {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(ItemRequestInfoDtoList), result);
+        assertEquals(objectMapper.writeValueAsString(itemRequestInfoDtoList), result);
         verify(itemRequestService).getAllOtherUsersRequests(expectedUserId, 0, 1);
     }
 
