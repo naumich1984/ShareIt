@@ -64,10 +64,8 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
         }
-        Optional<Booking> bookingO = Optional.ofNullable(getBooking(bookingId, userId));
-        if (!bookingO.isPresent()) {
-            throw new NotFoundException("Booking not found");
-        }
+        Optional<Booking> bookingO = Optional.ofNullable(bookingRepository.getByBookingIdAndOwnerItemId(bookingId, userId)
+                .orElseThrow(() -> new NotFoundException("Booking not found")));
         Booking booking = bookingO.get();
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new BadRequestException("Cannot change booking status: " + booking.getStatus().name());

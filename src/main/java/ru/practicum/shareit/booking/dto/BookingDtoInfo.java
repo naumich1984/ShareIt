@@ -7,6 +7,7 @@ import lombok.Setter;
 import ru.practicum.shareit.booking.BookingStatus;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -20,6 +21,19 @@ public class BookingDtoInfo {
     private BookingStatus status;
     private UserDto booker;
     private ItemDto item;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookingDtoInfo that = (BookingDtoInfo) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Getter
     @Setter

@@ -29,7 +29,7 @@ public class BookingController {
         log.debug("POST /booking request");
         log.debug("X-Sharer-User-Id: {}", userId);
 
-        return ResponseEntity.ok(BookingMapper.toBookingDto(bookingService.addBooking(bookingDto, userId)));
+        return ResponseEntity.ok(BookingMapper.toBookingDtoInfo(bookingService.addBooking(bookingDto, userId)));
     }
 
     @PatchMapping("/bookings/{bookingId}")
@@ -40,7 +40,7 @@ public class BookingController {
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("bookingId: {}", bookingId);
 
-        return ResponseEntity.ok(BookingMapper.toBookingDto(bookingService.approveBooking(bookingId, approved, userId)));
+        return ResponseEntity.ok(BookingMapper.toBookingDtoInfo(bookingService.approveBooking(bookingId, approved, userId)));
     }
 
     @GetMapping("/bookings/{bookingId}")
@@ -50,7 +50,7 @@ public class BookingController {
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("bookingId: {}", bookingId);
 
-        return ResponseEntity.ok(BookingMapper.toBookingDto(bookingService.getBooking(bookingId, userId)));
+        return ResponseEntity.ok(BookingMapper.toBookingDtoInfo(bookingService.getBooking(bookingId, userId)));
     }
 
     @GetMapping("/bookings")
@@ -66,7 +66,7 @@ public class BookingController {
 
         return ResponseEntity.ok(bookingService.getAllUserBooking(state, userId, from, size)
                 .stream()
-                .map(booking -> BookingMapper.toBookingDto(booking))
+                .map(booking -> BookingMapper.toBookingDtoInfo(booking))
                 .collect(Collectors.toList()));
     }
 
@@ -83,7 +83,7 @@ public class BookingController {
 
         return ResponseEntity.ok(bookingService.getAllBookingsUserItems(state, userId, from, size)
                 .stream()
-                .map(booking -> BookingMapper.toBookingDto(booking))
+                .map(booking -> BookingMapper.toBookingDtoInfo(booking))
                 .collect(Collectors.toList()));
     }
 }
