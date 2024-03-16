@@ -113,6 +113,14 @@ class BookingServiceTest {
     }
 
     @Test
+    void addBooking_whenItemNotFound2_thenExceptionThrown() {
+        when(itemService.getItem(expectedItemId, expectedUserId)).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> bookingService.addBooking(expectedBookingDto,expectedUserId));
+        verify(bookingRepository, never()).save(expectedBooking);
+    }
+
+    @Test
     void addBooking_whenItemNotAvailable_thenExceptionThrown() {
         expectedItem.setAvailable(false);
         when(itemService.getItem(expectedItemId, expectedUserId)).thenReturn(expectedItem);
@@ -147,6 +155,15 @@ class BookingServiceTest {
     @Test
     void approveBooking_whenUserNotFound_thenExceptionThrown() {
         when(userService.getUser(expectedUserId)).thenThrow(new NotFoundException("User not found!"));
+
+        assertThrows(NotFoundException.class, () -> bookingService.approveBooking(expectedBookingId, true, expectedUserId));
+
+        verify(bookingRepository, never()).save(expectedBooking);
+    }
+
+    @Test
+    void approveBooking_whenUserNotFound2_thenExceptionThrown() {
+        when(userService.getUser(expectedUserId)).thenReturn(User.builder().id(111L).build());
 
         assertThrows(NotFoundException.class, () -> bookingService.approveBooking(expectedBookingId, true, expectedUserId));
 
@@ -199,6 +216,14 @@ class BookingServiceTest {
     @Test
     void getBooking_whenUserNotFound_thenExceptionThrown() {
         when(userService.getUser(expectedUserId)).thenThrow(new NotFoundException("User not found!"));
+
+        assertThrows(NotFoundException.class, () -> bookingService.getBooking(expectedBookingId, expectedUserId));
+        verifyNoInteractions(bookingRepository);
+    }
+
+    @Test
+    void getBooking_whenUserNotFound2_thenExceptionThrown() {
+        when(userService.getUser(expectedUserId)).thenReturn(User.builder().id(111L).build());
 
         assertThrows(NotFoundException.class, () -> bookingService.getBooking(expectedBookingId, expectedUserId));
         verifyNoInteractions(bookingRepository);
@@ -294,6 +319,15 @@ class BookingServiceTest {
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
 
         assertEquals(actualBookingList, actualBookingList);
+    }
+
+    @Test
+    void getAllUserBooking_whenUserNotFound_thenExceptionThrown() {
+        String state = "REJECTED";
+        expectedBooking.setStatus(BookingStatus.REJECTED);
+        when(userService.getUser(expectedUserId)).thenReturn(User.builder().id(111L).build());
+
+        assertThrows(NotFoundException.class, () -> bookingService.getAllUserBooking(state, expectedUserId, 0, 1));
     }
 
     @Test
