@@ -66,6 +66,7 @@ class ItemRequestServiceTest {
         ItemRequest actualItemRequest = itemRequestService.addRequest(expectedItemRequest);
 
         assertEquals(expectedItemRequest, actualItemRequest);
+        assertEquals(expectedItemRequest.hashCode(), actualItemRequest.hashCode());
         verify(itemRequestRepository).save(expectedItemRequest);
     }
 

@@ -85,6 +85,7 @@ class UserServiceTest {
         oldUser.setName("oldName1");
         oldUser.setEmail("oldEmail1");
         User newUser = new User();
+        newUser.setId(1L);
         newUser.setName("newName1");
         newUser.setEmail("newEmail1");
         UserDto newUserDto = UserMapper.toUserDto(newUser);
@@ -96,6 +97,8 @@ class UserServiceTest {
         User savedUser = userArgumentCaptor.getValue();
         assertEquals(newUser.getName(), savedUser.getName());
         assertEquals(newUser.getEmail(), savedUser.getEmail());
+        assertEquals(UserMapper.toUserDto(savedUser), newUserDto);
+        assertEquals(UserMapper.toUserDto(savedUser).hashCode(), newUserDto.hashCode());
     }
 
     @Test
@@ -115,6 +118,7 @@ class UserServiceTest {
         User actualUser = userService.getUser(expectedUserId);
 
         assertEquals(expectedUser, actualUser);
+        assertEquals(expectedUser.hashCode(), actualUser.hashCode());
         verify(userRepository).findById(expectedUserId);
     }
 

@@ -42,17 +42,12 @@ public class ItemMapper {
                 item.getAvailable(),
                 comments == null ? Collections.EMPTY_LIST : comments
                         .stream()
-                        .map(comment -> itemCommentToCommentDto(comment))
+                        .map(comment -> new ItemInfoDto.CommentDto(comment.getId(), comment.getText(),
+                                comment.getAuthor().getName(), comment.getCreated()))
                         .collect(Collectors.toList()),
                 lastBooking == null ? null : new ItemInfoDto.BookingDto(lastBooking.getId(), lastBooking.getBooker().getId()),
                 nextBooking == null ? null : new ItemInfoDto.BookingDto(nextBooking.getId(), nextBooking.getBooker().getId())
         );
-    }
-
-    public static ItemInfoDto.CommentDto itemCommentToCommentDto(Comment comment) {
-
-        return new ItemInfoDto.CommentDto(comment.getId(), comment.getText(),
-                comment.getAuthor().getName(), comment.getCreated());
     }
 
     public static Comment toComment(CommentDto commentDto, Item item, User user) {

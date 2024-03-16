@@ -23,11 +23,11 @@ public class CommentDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CommentDto that = (CommentDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(text, that.text);
+        return Objects.equals(text, that.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text);
+        return Objects.hash(text);
     }
 }

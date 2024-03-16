@@ -96,6 +96,7 @@ class ItemServiceTest {
         Item actualItem = itemService.addItem(expectedDtoItem, expectedUserId);
 
         assertEquals(expectedItem, actualItem);
+        assertEquals(expectedItem.hashCode(), actualItem.hashCode());
         verify(itemRepository).save(expectedItem);
     }
 
@@ -301,6 +302,7 @@ class ItemServiceTest {
         verify(commentRepository).save(commentArgumentCaptor.capture());
         Comment actualComment = commentArgumentCaptor.getValue();
         assertEquals(expectedCommentDto.getText(), actualComment.getText());
+        assertEquals(expectedCommentDto.hashCode(), ItemMapper.toCommentDto(actualComment).hashCode());
     }
 
     @Test

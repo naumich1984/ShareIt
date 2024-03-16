@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoInfo;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
@@ -69,6 +70,27 @@ class BookingServiceTest {
     }
 
     @Test
+    void toBookingDto_checkEqualsAndHashCode() {
+        BookingDto checkedBookingDto = new BookingDto(expectedBookingId, LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2));
+
+        assertEquals(expectedBookingDto, checkedBookingDto);
+        assertEquals(expectedBookingDto.hashCode(), checkedBookingDto.hashCode());
+    }
+
+    @Test
+    void toBookingDtoInfo_checkEqualsAndHashCode() {
+        Booking checkedBooking = new Booking(expectedBookingId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2),
+                expectedItem, expectedUser, BookingStatus.WAITING);
+        BookingDtoInfo checkedBookingDtoInfo = BookingMapper.toBookingDtoInfo(checkedBooking);
+        BookingDtoInfo expectedBookingDtoInfo = BookingMapper.toBookingDtoInfo(expectedBooking);
+        expectedBookingDtoInfo.setId(expectedBookingId);
+
+        assertEquals(expectedBookingDtoInfo, checkedBookingDtoInfo);
+        assertEquals(expectedBookingDtoInfo.hashCode(), checkedBookingDtoInfo.hashCode());
+    }
+
+    @Test
     void addBooking_whenInvoked_thenReturnedBooking() {
         when(itemService.getItem(expectedItemId, expectedUserId)).thenReturn(expectedItem);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
@@ -77,6 +99,8 @@ class BookingServiceTest {
         Booking actualBooking = bookingService.addBooking(expectedBookingDto,expectedUserId);
 
         assertEquals(expectedBooking, actualBooking);
+        assertEquals(expectedBooking, actualBooking);
+        assertEquals(expectedBooking.hashCode(), actualBooking.hashCode());
         verify(bookingRepository).save(expectedBooking);
     }
 
@@ -458,6 +482,21 @@ class BookingServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1));
         verifyNoInteractions(bookingRepository);
+    }
+
+    @Test
+    void getAllBookingsUserItems_whenStateIsNull_thenReturnedAllStatusBookingList() {
+        String state = null;
+        List<Booking> expectedBookingList = Collections.emptyList();
+        when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
+        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1)))
+                .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
+
+        List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
+
+        assertEquals(expectedBookingList, actualBookingList);
+        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1));
+
     }
 
     @Test

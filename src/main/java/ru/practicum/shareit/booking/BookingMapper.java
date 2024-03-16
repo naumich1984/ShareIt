@@ -17,13 +17,6 @@ public class BookingMapper {
                 new BookingDtoInfo.ItemDto(booking.getItem().getId(), booking.getItem().getName()));
     }
 
-    public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd());
-    }
-
     public static Booking toBooking(BookingDto bookingDto, Item item, User user) {
         return Booking.builder()
                 .start(bookingDto.getStart())
