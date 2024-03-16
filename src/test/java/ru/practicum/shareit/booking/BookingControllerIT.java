@@ -301,7 +301,53 @@ class BookingControllerIT {
         verify(bookingService).getAllUserBooking("ANY", expectedUserId, 0, 1);
     }
 
+    @SneakyThrows
     @Test
-    void getAllBookingsUserItems() {
+    void getAllBookingsUserItems_thenReturnedOk() {
+        List<Booking> expectedBookingList = List.of(expectedBooking);
+        when(bookingService.getAllBookingsUserItems("ALL", expectedUserId, 0, 1)).thenReturn(expectedBookingList);
+
+        String result = mockMvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", expectedUserId)
+                        .param("state", "ALL")
+                        .param("from", "0")
+                        .param("size","1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals(objectMapper.writeValueAsString(List.of(expectedBookingDtoInfo)), result);
+        verify(bookingService).getAllBookingsUserItems("ALL", expectedUserId, 0, 1);
+    }
+
+    @SneakyThrows
+    @Test
+    void getAllBookingsUserItems_whenUserNotFound_thenExceptionThrown() {
+        when(bookingService.getAllBookingsUserItems("ALL", expectedUserId, 0, 1)).thenThrow(new NotFoundException("User not found!"));
+
+        mockMvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", expectedUserId)
+                        .param("state", "ALL")
+                        .param("from", "0")
+                        .param("size","1"))
+                .andExpect(status().isNotFound());
+
+        verify(bookingService).getAllBookingsUserItems("ALL", expectedUserId, 0, 1);
+    }
+
+    @SneakyThrows
+    @Test
+    void getAllBookingsUserItems_whenBookingStatusNotFound_thenExceptionThrown() {
+        when(bookingService.getAllBookingsUserItems("ANY", expectedUserId, 0, 1)).thenThrow(new IllegalArgumentException("Status illegal!"));
+
+        mockMvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", expectedUserId)
+                        .param("state", "ANY")
+                        .param("from", "0")
+                        .param("size","1"))
+                .andExpect(status().is5xxServerError());
+
+        verify(bookingService).getAllBookingsUserItems("ANY", expectedUserId, 0, 1);
     }
 }
