@@ -21,6 +21,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -86,6 +87,22 @@ class ItemServiceTest {
                 expectedItem, expectedUser, BookingStatus.APPROVED);
         firstPage = PageRequest.of(0, 1);
         expectedCommentDto = new CommentDto(1L, "commentText", "authorName", LocalDateTime.now());
+    }
+
+    @Test
+    void itemDtoItemCheck () {
+        ItemDto checkedDtoItem = new ItemDto(expectedItemId, "nameItem1", "descriptionItem1", true, expectedRequestId);
+
+        assertEquals(expectedDtoItem, checkedDtoItem);
+        assertEquals(expectedDtoItem.hashCode(), checkedDtoItem.hashCode());
+    }
+
+    @Test
+    void itemRequestDtoCheck () {
+        ItemRequest checkedRequest = new ItemRequest(expectedRequestId, "requestDescription", expectedUser2, LocalDateTime.now());
+
+        assertEquals(ItemRequestMapper.toItemRequestDto(expectedRequest), ItemRequestMapper.toItemRequestDto(checkedRequest));
+        assertEquals(ItemRequestMapper.toItemRequestDto(expectedRequest).hashCode(), ItemRequestMapper.toItemRequestDto(checkedRequest).hashCode());
     }
 
     @Test
@@ -199,8 +216,16 @@ class ItemServiceTest {
     }
 
     @Test
-    void getItem_whenItemNotFound_thenReturnItem() {
+    void getItem_whenItemNotFound_thenExceptionThrown() {
         when(itemRepository.findById(expectedItemId)).thenThrow(new NotFoundException("Item not found"));
+
+        assertThrows(NotFoundException.class, () -> itemService.getItem(expectedItemId, expectedUserId));
+        verify(itemRepository).findById(expectedItemId);
+    }
+
+    @Test
+    void getItem_whenItemNotFound2_thenExceptionThrown() {
+        when(itemRepository.findById(expectedItemId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> itemService.getItem(expectedItemId, expectedUserId));
         verify(itemRepository).findById(expectedItemId);
@@ -269,6 +294,16 @@ class ItemServiceTest {
     @Test
     void getItemWithBookings_whenItemNotExist_thenNotFoundExceptionThrown() {
         when(itemRepository.findById(expectedItemId)).thenThrow(new NotFoundException("Item not found!"));
+
+        assertThrows(NotFoundException.class, () -> itemService.getItemWithBookings(expectedItemId, expectedUserId));
+        verifyNoInteractions(bookingRepository);
+        verifyNoInteractions(commentRepository);
+        verify(itemRepository).findById(expectedItemId);
+    }
+
+    @Test
+    void getItemWithBookings_whenItemNotExist2_thenNotFoundExceptionThrown() {
+        when(itemRepository.findById(expectedItemId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> itemService.getItemWithBookings(expectedItemId, expectedUserId));
         verifyNoInteractions(bookingRepository);

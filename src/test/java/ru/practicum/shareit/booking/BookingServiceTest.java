@@ -139,6 +139,15 @@ class BookingServiceTest {
     }
 
     @Test
+    void addBooking_whenUserIsOwner_thenExceptionThrown() {
+        when(itemService.getItem(expectedItemId, expectedUserId)).thenReturn(expectedItemOwner);
+        when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
+
+        assertThrows(NotFoundException.class, () -> bookingService.addBooking(expectedBookingDto,expectedUserId));
+        verify(bookingRepository, never()).save(expectedBooking);
+    }
+
+    @Test
     void approveBooking_whenInvoked_thenReturnedBooking() {
         expectedBooking.setStatus(BookingStatus.WAITING);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
@@ -328,6 +337,15 @@ class BookingServiceTest {
         when(userService.getUser(expectedUserId)).thenReturn(User.builder().id(111L).build());
 
         assertThrows(NotFoundException.class, () -> bookingService.getAllUserBooking(state, expectedUserId, 0, 1));
+    }
+
+    @Test
+    void getAllUserBooking_whenStateIsNull_thenExceptionThrown() {
+        String state = "123";
+        expectedBooking.setStatus(BookingStatus.REJECTED);
+        when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
+
+        assertThrows(IllegalArgumentException.class, () -> bookingService.getAllUserBooking(state, expectedUserId, 0, 1));
     }
 
     @Test
