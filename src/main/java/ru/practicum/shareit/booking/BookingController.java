@@ -56,8 +56,8 @@ public class BookingController {
     @GetMapping("/bookings")
     public ResponseEntity<List<BookingDtoInfo>> getAllUserBooking(@RequestParam(value = "state", required = false) String state,
                                                                   @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
-                                                                  @RequestParam(required = false) @Min(0) Integer from,
-                                                                  @RequestParam(required = false) @Min(1) Integer size) {
+                                                                  @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                                  @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /bookings?state={state}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("BookingStatus: {}", state);
@@ -73,8 +73,8 @@ public class BookingController {
     @GetMapping("/bookings/owner")
     public ResponseEntity<List<BookingDtoInfo>> getAllBookingsUserItems(@RequestParam(value = "state", required = false) String state,
                                                                         @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
-                                                                        @RequestParam(required = false) @Min(0) Integer from,
-                                                                        @RequestParam(required = false) @Min(1) Integer size) {
+                                                                        @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                                        @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         log.debug("GET /bookings/owner?state={state}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("BookingStatus: {}", state);

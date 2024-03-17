@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.CommonPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoInfo;
 import ru.practicum.shareit.exception.BadRequestException;
@@ -48,7 +49,7 @@ class BookingServiceTest {
     private Long expectedBookingId;
     private Booking expectedBooking;
     private BookingDto expectedBookingDto;
-    private PageRequest firstPage;
+    private CommonPageRequest firstPage;
 
     @InjectMocks
     private BookingServiceImpl bookingService;
@@ -66,7 +67,7 @@ class BookingServiceTest {
         expectedItemOwner = ItemMapper.toItem(expectedDtoItem, expectedUserId);
         expectedBookingDto = new BookingDto(expectedBookingId, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
         expectedBooking = BookingMapper.toBooking(expectedBookingDto, expectedItem, expectedUser);
-        firstPage = PageRequest.of(0, 1);
+        firstPage = new CommonPageRequest(0, 1);
     }
 
     @Test
@@ -252,7 +253,7 @@ class BookingServiceTest {
         String state = "ALL";
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserId(expectedUserId, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
@@ -266,7 +267,7 @@ class BookingServiceTest {
         expectedBooking.setStatus(expectedState);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserIdAndByStatus(expectedUserId, expectedState, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserIdAndByStatus(expectedUserId, expectedState, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(expectedState.name(), expectedUserId, 0, 1);
@@ -280,7 +281,7 @@ class BookingServiceTest {
         expectedBooking.setStatus(BookingStatus.APPROVED);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserIdAndByStatusPast(expectedUserId, BookingStatus.APPROVED, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserIdAndByStatusPast(expectedUserId, BookingStatus.APPROVED, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
@@ -294,7 +295,7 @@ class BookingServiceTest {
         expectedBooking.setStatus(BookingStatus.APPROVED);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserIdAndByStatusCurrent(expectedUserId, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserIdAndByStatusCurrent(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
@@ -308,7 +309,7 @@ class BookingServiceTest {
         expectedBooking.setStatus(BookingStatus.APPROVED);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserIdAndByStatusFuture(expectedUserId, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserIdAndByStatusFuture(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
@@ -322,7 +323,7 @@ class BookingServiceTest {
         expectedBooking.setStatus(BookingStatus.REJECTED);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByUserIdAndByStatus(expectedUserId, BookingStatus.REJECTED, PageRequest.of(0,1)))
+        when(bookingRepository.findAllBookingByUserIdAndByStatus(expectedUserId, BookingStatus.REJECTED, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllUserBooking(state, expectedUserId, 0, 1);
@@ -353,13 +354,13 @@ class BookingServiceTest {
         String state = "ALL";
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, firstPage);
     }
 
     @Test
@@ -367,13 +368,13 @@ class BookingServiceTest {
         String state = "ALL";
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, firstPage);
     }
 
     @Test
@@ -382,13 +383,13 @@ class BookingServiceTest {
         BookingStatus status = BookingStatus.WAITING;
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage);
     }
 
     @Test
@@ -397,13 +398,13 @@ class BookingServiceTest {
         BookingStatus status = BookingStatus.WAITING;
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage);
     }
 
     @Test
@@ -413,13 +414,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, firstPage);
     }
 
     @Test
@@ -428,13 +429,13 @@ class BookingServiceTest {
         BookingStatus status = BookingStatus.APPROVED;
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusPast(expectedUserId, status, firstPage);
     }
 
     @Test
@@ -444,13 +445,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, firstPage);
     }
 
     @Test
@@ -460,13 +461,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusCurrent(expectedUserId, firstPage);
     }
 
     @Test
@@ -476,13 +477,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, firstPage);
     }
 
     @Test
@@ -492,13 +493,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatusFuture(expectedUserId, firstPage);
     }
 
     @Test
@@ -508,13 +509,13 @@ class BookingServiceTest {
         expectedBooking.setStatus(status);
         List<Booking> expectedBookingList = List.of(expectedBooking);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, firstPage);
     }
 
     @Test
@@ -541,36 +542,14 @@ class BookingServiceTest {
         String state = null;
         List<Booking> expectedBookingList = Collections.emptyList();
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1)))
+        when(bookingRepository.findAllBookingByOwnerId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
 
         List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, 0, 1);
 
         assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, PageRequest.of(0, 1));
+        verify(bookingRepository).findAllBookingByOwnerId(expectedUserId, firstPage);
 
-    }
-
-    @Test
-    void getAllBookingsUserItems_whenInvokedFromIsNull_thenReturnedBookingList() {
-        String state = "REJECTED";
-        BookingStatus status = BookingStatus.REJECTED;
-        expectedBooking.setStatus(status);
-        List<Booking> expectedBookingList = List.of(expectedBooking);
-        when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(bookingRepository.findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1)))
-                .thenReturn(new PageImpl<>(expectedBookingList, firstPage, 1));
-
-        List<Booking> actualBookingList = bookingService.getAllBookingsUserItems(state, expectedUserId, null, 1);
-
-        assertEquals(expectedBookingList, actualBookingList);
-        verify(bookingRepository).findAllBookingByOwnerIdAndByStatus(expectedUserId, status, PageRequest.of(0, 1));
-    }
-
-    @Test
-    void getAllBookingsUserItems_whenInvokedSizeIsZero_thenReturnedBookingList() {
-        assertThrows(IllegalArgumentException.class, () -> bookingService.getAllBookingsUserItems("ALL", expectedUserId, 0, 0));
-        verifyNoInteractions(bookingRepository);
     }
 
 }

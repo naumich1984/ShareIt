@@ -2,12 +2,10 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.CommonPageRequest;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -28,8 +26,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRepository itemRepository;
     private final UserService userService;
-    @Value("${itemrequest.pagination.default.size}")
-    private Integer sizeItemRequestPage;
 
     @Override
     @Transactional
@@ -62,9 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestInfoDto> getAllOtherUsersRequests(Long userId, Integer from, Integer size) {
         log.debug("getAllOtherUsersRequests");
-        from = from == null ? 0 : from;
-        size = size == null ? 1 : size;
-        Pageable pageable = PageRequest.of(from, size);
+        CommonPageRequest pageable = new CommonPageRequest(from, size);
         User user = userService.getUser(userId);
         Page<ItemRequest> itemRequestList = itemRequestRepository.findAllRequestWithItemsByNotUserId(userId, pageable);
         List<Item> itemList = itemRepository.findAllByRequestIdList(itemRequestList

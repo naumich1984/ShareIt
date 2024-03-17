@@ -2,12 +2,10 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.CommonPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -29,8 +27,6 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemService itemService;
     private final UserService userService;
-    @Value("${itemrequest.pagination.default.size}")
-    private Integer sizeItemRequestPage;
 
     @Override
     @Transactional
@@ -96,9 +92,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public List<Booking> getAllUserBooking(String state, Long userId, Integer from, Integer size) {
         log.debug("getAllUserBooking");
-        from = from == null ? 0 : from;
-        size = size == null ? sizeItemRequestPage : size;
-        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
+        CommonPageRequest pageable = new CommonPageRequest(from, size);
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -136,9 +130,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public List<Booking> getAllBookingsUserItems(String state, Long userId, Integer from, Integer size) {
         log.debug("getAllBookingsUserItems");
-        from = from == null ? 0 : from;
-        size = size == null ? sizeItemRequestPage : size;
-        Pageable pageable = PageRequest.of(from > 0 ? from / size : 0, size);
+        CommonPageRequest pageable = new CommonPageRequest(from, size);
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");

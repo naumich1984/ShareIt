@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.CommonPageRequest;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -103,7 +103,7 @@ class ItemRequestServiceTest {
     @Test
     void getAllOtherUsersRequests_whenInvoked_thenReturnedItemRequestsList() {
         List<ItemRequest> itemRequestList = List.of(expectedItemRequest);
-        PageRequest firstPage = PageRequest.of(0,1);
+        CommonPageRequest firstPage = new CommonPageRequest(0, 1);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
         when(itemRequestRepository.findAllRequestWithItemsByNotUserId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(List.of(expectedItemRequest), firstPage, 1));
@@ -117,25 +117,9 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void getAllOtherUsersRequests_whenInvokedAndFromIsNull_thenReturnedItemRequestsList() {
-        List<ItemRequest> itemRequestList = List.of(expectedItemRequest);
-        PageRequest firstPage = PageRequest.of(0,1);
-        when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
-        when(itemRequestRepository.findAllRequestWithItemsByNotUserId(expectedUserId, firstPage))
-                .thenReturn(new PageImpl<>(List.of(expectedItemRequest), firstPage, 1));
-        when(itemRepository.findAllByRequestIdList(List.of(1L))).thenReturn(List.of(expectedItem));
-
-        List<ItemRequestInfoDto> actualItemRequestList = itemRequestService.getAllOtherUsersRequests(expectedUserId,null,1);
-
-        assertEquals(expectedItemRequest.getDescription(), actualItemRequestList.get(0).getDescription());
-        assertEquals(itemRequestList.size(), actualItemRequestList.size());
-        verify(itemRequestRepository).findAllRequestWithItemsByNotUserId(expectedUserId, firstPage);
-    }
-
-    @Test
     void getAllOtherUsersRequests_whenInvokedAndSizeIsNull_thenReturnedItemRequestsList() {
         List<ItemRequest> itemRequestList = List.of(expectedItemRequest);
-        PageRequest firstPage = PageRequest.of(0,1);
+        CommonPageRequest firstPage = new CommonPageRequest(0, 1);
         when(userService.getUser(expectedUserId)).thenReturn(expectedUser);
         when(itemRequestRepository.findAllRequestWithItemsByNotUserId(expectedUserId, firstPage))
                 .thenReturn(new PageImpl<>(List.of(expectedItemRequest), firstPage, 1));
