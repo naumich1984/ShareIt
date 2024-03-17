@@ -87,6 +87,7 @@ class BookingControllerIT {
     @Test
     void addBooking_whenBookingNotValid_thenExceptionThrown() {
         expectedBookingDto.setEnd(null);
+
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", expectedUserId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,6 +101,7 @@ class BookingControllerIT {
     @Test
     void addBooking_whenUserNotValid_thenExceptionThrown() {
         expectedBookingDto.setEnd(null);
+
         mockMvc.perform(post("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(expectedBookingDto)))
