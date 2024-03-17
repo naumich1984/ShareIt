@@ -90,7 +90,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void itemDtoItemCheck () {
+    void itemDtoItemCheck() {
         ItemDto checkedDtoItem = new ItemDto(expectedItemId, "nameItem1", "descriptionItem1", true, expectedRequestId);
 
         assertEquals(expectedDtoItem, checkedDtoItem);
@@ -98,7 +98,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void itemRequestDtoCheck () {
+    void itemRequestDtoCheck() {
         ItemRequest checkedRequest = new ItemRequest(expectedRequestId, "requestDescription", expectedUser2, LocalDateTime.now());
 
         assertEquals(ItemRequestMapper.toItemRequestDto(expectedRequest), ItemRequestMapper.toItemRequestDto(checkedRequest));
