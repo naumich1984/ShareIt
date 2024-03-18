@@ -1,20 +1,17 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"itemId"})
 public class BookingDto {
 
     private Long itemId;
@@ -30,18 +27,5 @@ public class BookingDto {
         }
 
         return false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BookingDto that = (BookingDto) o;
-        return Objects.equals(itemId, that.itemId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(itemId);
     }
 }
