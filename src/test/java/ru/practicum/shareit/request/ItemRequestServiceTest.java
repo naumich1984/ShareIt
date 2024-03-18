@@ -43,7 +43,7 @@ class ItemRequestServiceTest {
 
 
     @InjectMocks
-    ItemRequestServiceImpl itemRequestService;
+    private ItemRequestServiceImpl itemRequestService;
 
     @Captor
     private ArgumentCaptor<ItemRequest> itemRequestArgumentCaptor;

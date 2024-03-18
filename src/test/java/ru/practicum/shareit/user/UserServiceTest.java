@@ -29,7 +29,7 @@ class UserServiceTest {
     private User expectedUser;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;

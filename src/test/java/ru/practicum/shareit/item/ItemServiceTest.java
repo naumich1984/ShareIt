@@ -63,7 +63,7 @@ class ItemServiceTest {
     private CommentDto expectedCommentDto;
 
     @InjectMocks
-    ItemServiceImpl itemService;
+    private ItemServiceImpl itemService;
 
     @Captor
     private ArgumentCaptor<Item> itemArgumentCaptor;

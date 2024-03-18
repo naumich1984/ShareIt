@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class BookingControllerTest {
 
     @Mock
-    BookingService bookingService;
+    private BookingService bookingService;
     private Long expectedItemId;
     private Long expectedRequestId;
     private ItemDto expectedDtoItem;
@@ -39,7 +39,7 @@ class BookingControllerTest {
     private BookingDtoInfo expectedBookingDtoInfo;
 
     @InjectMocks
-    BookingController bookingController;
+    private BookingController bookingController;
 
     @BeforeEach
     void setUp() {
