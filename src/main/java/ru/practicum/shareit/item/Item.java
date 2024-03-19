@@ -13,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"id", "name", "description"})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

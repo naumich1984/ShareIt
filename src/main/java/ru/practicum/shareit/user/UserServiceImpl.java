@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,6 +42,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userUpdated);
     }
 
+
+
     @Transactional
     @Override
     public int deleteUser(Long userId) {
@@ -62,10 +65,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         log.debug("getAllUsers");
         List<User> users = userRepository.findAll();
 
-        return users;
+        return users.stream()
+                .map(user -> UserMapper.toUserDto(user))
+                .collect(Collectors.toList());
     }
 }

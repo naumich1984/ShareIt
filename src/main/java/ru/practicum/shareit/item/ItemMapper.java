@@ -4,6 +4,7 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -25,12 +26,12 @@ public class ItemMapper {
 
     public static Item toItem(ItemDto itemDto, Long userId) {
         return new Item(
-                null,
+                itemDto.getId(),
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
                 new User(userId, userId.toString(), userId.toString()),
-                null
+                itemDto.getRequestId() != null ? ItemRequest.builder().id(itemDto.getRequestId()).build() : null
         );
     }
 
@@ -41,17 +42,12 @@ public class ItemMapper {
                 item.getAvailable(),
                 comments == null ? Collections.EMPTY_LIST : comments
                         .stream()
-                        .map(comment -> itemCommentToCommentDto(comment))
+                        .map(comment -> new ItemInfoDto.CommentDto(comment.getId(), comment.getText(),
+                                comment.getAuthor().getName(), comment.getCreated()))
                         .collect(Collectors.toList()),
                 lastBooking == null ? null : new ItemInfoDto.BookingDto(lastBooking.getId(), lastBooking.getBooker().getId()),
                 nextBooking == null ? null : new ItemInfoDto.BookingDto(nextBooking.getId(), nextBooking.getBooker().getId())
         );
-    }
-
-    public static ItemInfoDto.CommentDto itemCommentToCommentDto(Comment comment) {
-
-        return new ItemInfoDto.CommentDto(comment.getId(), comment.getText(),
-                comment.getAuthor().getName(), comment.getCreated());
     }
 
     public static Comment toComment(CommentDto commentDto, Item item, User user) {
@@ -65,7 +61,7 @@ public class ItemMapper {
 
     public static CommentDto toCommentDto(Comment comment) {
 
-        return new CommentDto(comment.getId(), comment.getText(),comment.getAuthor().getName(), comment.getCreated());
+        return new CommentDto(comment.getId(), comment.getText(), comment.getAuthor().getName(), comment.getCreated());
     }
 
 }

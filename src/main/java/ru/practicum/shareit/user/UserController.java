@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,9 +50,6 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.debug("GET /users request");
 
-        return ResponseEntity.ok(userService.getAllUsers()
-                .stream()
-                .map(user -> UserMapper.toUserDto(user))
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

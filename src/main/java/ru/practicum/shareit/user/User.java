@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = {"id", "name", "email"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

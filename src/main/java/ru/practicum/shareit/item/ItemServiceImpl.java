@@ -37,12 +37,11 @@ public class ItemServiceImpl implements ItemService {
     @Value("${booking.statuses.worked}")
     private final List<BookingStatus> workedStatuses;
 
-
     @Override
     @Transactional
     public Item addItem(ItemDto itemDto, Long userId) {
         log.debug("addItem");
-        userService.getUser(userId);
+        User user = userService.getUser(userId);
 
         return itemRepository.save(ItemMapper.toItem(itemDto, userId));
     }
@@ -132,7 +131,7 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getItemsBySearch(String pattern, Long userId) {
         log.debug("getItemsBySearch");
         if (pattern.isBlank()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return itemRepository.findAllBySearch(pattern, userId);

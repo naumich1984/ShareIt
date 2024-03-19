@@ -2,8 +2,10 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.CommonPageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -12,7 +14,7 @@ import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,10 +60,8 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
         }
-        Optional<Booking> bookingO = Optional.ofNullable(getBooking(bookingId, userId));
-        if (!bookingO.isPresent()) {
-            throw new NotFoundException("Booking not found");
-        }
+        Optional<Booking> bookingO = Optional.ofNullable(bookingRepository.getByBookingIdAndOwnerItemId(bookingId, userId)
+                .orElseThrow(() -> new NotFoundException("Booking not found")));
         Booking booking = bookingO.get();
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new BadRequestException("Cannot change booking status: " + booking.getStatus().name());
@@ -90,8 +90,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<Booking> getAllUserBooking(String state, Long userId) {
+    public List<Booking> getAllUserBooking(String state, Long userId, Integer from, Integer size) {
         log.debug("getAllUserBooking");
+        CommonPageRequest pageable = new CommonPageRequest(from, size);
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -100,35 +101,36 @@ public class BookingServiceImpl implements BookingService {
         if (status == null) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
-        List<Booking> bookingsList = new ArrayList<>();
+        Page<Booking> bookingsList = null;
         switch (status) {
             case ALL:
-                bookingsList = bookingRepository.findAllBookingByUserId(userId);
+                bookingsList = bookingRepository.findAllBookingByUserId(userId, pageable);
                 break;
             case WAITING:
-                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatus(userId, BookingStatus.WAITING);
+                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatus(userId, BookingStatus.WAITING, pageable);
                 break;
             case PAST:
-                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusPast(userId, BookingStatus.APPROVED);
+                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusPast(userId, BookingStatus.APPROVED, pageable);
                 break;
             case CURRENT:
-                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusCurrent(userId);
+                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusCurrent(userId, pageable);
                 break;
             case FUTURE:
-                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusFuture(userId);
+                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatusFuture(userId, pageable);
                 break;
             case REJECTED:
-                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatus(userId, BookingStatus.REJECTED);
+                bookingsList = bookingRepository.findAllBookingByUserIdAndByStatus(userId, BookingStatus.REJECTED, pageable);
                 break;
         }
 
-        return bookingsList;
+        return bookingsList == null ? Collections.EMPTY_LIST : bookingsList.getContent();
     }
 
     @Override
     @Transactional
-    public List<Booking> getAllBookingsUserItems(String state, Long userId) {
+    public List<Booking> getAllBookingsUserItems(String state, Long userId, Integer from, Integer size) {
         log.debug("getAllBookingsUserItems");
+        CommonPageRequest pageable = new CommonPageRequest(from, size);
         User user = userService.getUser(userId);
         if (!userId.equals(user.getId())) {
             throw new NotFoundException("User not found");
@@ -137,28 +139,28 @@ public class BookingServiceImpl implements BookingService {
         if (status == null) {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
-        List<Booking> bookingsList = new ArrayList<>();
+        Page<Booking> bookingsList = null;
         switch (status) {
             case ALL:
-                bookingsList = bookingRepository.findAllBookingByOwnerId(userId);
+                bookingsList = bookingRepository.findAllBookingByOwnerId(userId, pageable);
                 break;
             case WAITING:
-                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatus(userId, BookingStatus.WAITING);
+                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatus(userId, BookingStatus.WAITING, pageable);
                 break;
             case PAST:
-                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusPast(userId, BookingStatus.APPROVED);
+                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusPast(userId, BookingStatus.APPROVED, pageable);
                 break;
             case CURRENT:
-                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(userId);
+                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusCurrent(userId, pageable);
                 break;
             case FUTURE:
-                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(userId);
+                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatusFuture(userId, pageable);
                 break;
             case REJECTED:
-                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatus(userId, BookingStatus.REJECTED);
+                bookingsList = bookingRepository.findAllBookingByOwnerIdAndByStatus(userId, BookingStatus.REJECTED, pageable);
                 break;
         }
 
-        return bookingsList;
+        return bookingsList == null ? Collections.EMPTY_LIST : bookingsList.getContent();
     }
 }

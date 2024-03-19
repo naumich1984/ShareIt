@@ -16,43 +16,43 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     //SAME OWNER
     @Query("select b from Booking b where b.item.owner.id = ?1 and b.status = ?2 " +
             " order by b.start desc ")
-    List<Booking> findAllBookingByOwnerIdAndByStatus(Long userId, BookingStatus name);
+    Page<Booking> findAllBookingByOwnerIdAndByStatus(Long userId, BookingStatus name, Pageable pageable);
 
     @Query("select b from Booking b where b.item.owner.id = ?1 order by b.start desc ")
-    List<Booking> findAllBookingByOwnerId(Long userId);
+    Page<Booking> findAllBookingByOwnerId(Long userId, Pageable pageable);
 
     //PAST OWNER
     @Query("select b from Booking b where b.item.owner.id = ?1 and b.end < now() and b.status = ?2 " +
             "order by b.start desc ")
-    List<Booking> findAllBookingByOwnerIdAndByStatusPast(Long userId, BookingStatus name);
+    Page<Booking> findAllBookingByOwnerIdAndByStatusPast(Long userId, BookingStatus name, Pageable pageable);
 
     //CURRENT OWNER
     @Query("select b from Booking b where b.item.owner.id = ?1 and b.start < now() and b.end > now() order by b.start desc ")
-    List<Booking> findAllBookingByOwnerIdAndByStatusCurrent(Long userId);
+    Page<Booking> findAllBookingByOwnerIdAndByStatusCurrent(Long userId, Pageable pageable);
 
     //FUTURE OWNER
     @Query("select b from Booking b where b.item.owner.id = ?1 and b.start > now() order by b.start desc ")
-    List<Booking> findAllBookingByOwnerIdAndByStatusFuture(Long userId);
+    Page<Booking> findAllBookingByOwnerIdAndByStatusFuture(Long userId, Pageable pageable);
 
     //SAME BOOKER
     @Query("select b from Booking b where b.booker.id = ?1 and b.status = ?2 order by b.start desc ")
-    List<Booking> findAllBookingByUserIdAndByStatus(Long userId, BookingStatus name);
+    Page<Booking> findAllBookingByUserIdAndByStatus(Long userId, BookingStatus name, Pageable pageable);
 
     @Query("select b from Booking b where b.booker.id = ?1 order by b.start desc ")
-    List<Booking> findAllBookingByUserId(Long userId);
+    Page<Booking> findAllBookingByUserId(Long userId, Pageable pageable);
 
     //CURRENT
     @Query("select b from Booking b where b.booker.id = ?1 and b.start < now() and b.end > now() order by b.start desc ")
-    List<Booking> findAllBookingByUserIdAndByStatusCurrent(Long userId);
+    Page<Booking> findAllBookingByUserIdAndByStatusCurrent(Long userId, Pageable pageable);
 
     //FUTURE
     @Query("select b from Booking b where b.booker.id = ?1 and b.start > now() order by b.start desc ")
-    List<Booking> findAllBookingByUserIdAndByStatusFuture(Long userId);
+    Page<Booking> findAllBookingByUserIdAndByStatusFuture(Long userId, Pageable pageable);
 
     //PAST
     @Query("select b from Booking b where b.booker.id = ?1 and b.end < now() and b.status = ?2 " +
             " order by b.start desc ")
-    List<Booking> findAllBookingByUserIdAndByStatusPast(Long userId, BookingStatus name);
+    Page<Booking> findAllBookingByUserIdAndByStatusPast(Long userId, BookingStatus name, Pageable pageable);
 
     //LAST NEXT
     @Query("select b from Booking b where b.start < now() and b.item.id = ?1 " +
