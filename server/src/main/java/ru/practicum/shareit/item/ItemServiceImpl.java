@@ -134,7 +134,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return itemRepository.findAllBySearch(pattern, userId);
+        return itemRepository.findAllBySearch(pattern);
     }
 
     @Override

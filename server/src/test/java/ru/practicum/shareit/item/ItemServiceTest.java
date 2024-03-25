@@ -235,12 +235,12 @@ class ItemServiceTest {
     void getItemsBySearch_whenPatternNotBlank_thenReturnedListOfItems() {
         String pattern = "pattern";
         List<Item> expectedItemsList = List.of(expectedItem);
-        when(itemRepository.findAllBySearch(pattern, expectedUserId)).thenReturn(expectedItemsList);
+        when(itemRepository.findAllBySearch(pattern)).thenReturn(expectedItemsList);
 
         List<Item> actualItems = itemService.getItemsBySearch(pattern, expectedUserId);
 
         assertEquals(expectedItemsList, actualItems);
-        verify(itemRepository).findAllBySearch(pattern, expectedUserId);
+        verify(itemRepository).findAllBySearch(pattern);
     }
 
     @Test
@@ -250,7 +250,7 @@ class ItemServiceTest {
         List<Item> actualItems = itemService.getItemsBySearch(pattern, expectedUserId);
 
         assertEquals(0, actualItems.size());
-        verify(itemRepository, never()).findAllBySearch(pattern, expectedUserId);
+        verify(itemRepository, never()).findAllBySearch(pattern);
     }
 
     @Test

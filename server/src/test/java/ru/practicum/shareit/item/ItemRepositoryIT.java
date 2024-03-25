@@ -73,8 +73,7 @@ class ItemRepositoryIT {
 
     @Test
     void findAllBySearch() {
-        Long userId = 1L;
-        List<Item> actualItems = itemRepository.findAllBySearch("description1", userId);
+        List<Item> actualItems = itemRepository.findAllBySearch("description1");
 
         assertTrue(!actualItems.isEmpty());
         assertEquals(1, actualItems.size());
