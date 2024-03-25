@@ -1,19 +1,19 @@
 version: '3.8'
 services:
-  shareit-gateway:
-    build: ./shareit-gateway
-    container_name: shareit-gateway
+  gateway:
+    build: ./gateway
+    container_name: gateway
     ports:
       - "8080:8080"
     depends_on:
-      - shareit-server
+      - server
       - db
     environment:
-      - SHAREIT_SERVER_URL=http://shareit-server:9090
+      - SHAREIT_SERVER_URL=http://server:9090
 
-  shareit-server:
-    build: ./shareit-server
-    container_name: shareit-server
+  server:
+    build: ./server
+    container_name: server
     ports:
       - "9090:9090"
     depends_on:
