@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<UserDto> saveNewUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> saveNewUser(@RequestBody UserDto userDto) {
         log.debug("POST /users request");
 
         return ResponseEntity.ok(UserMapper.toUserDto(userService.saveUser(userDto)));

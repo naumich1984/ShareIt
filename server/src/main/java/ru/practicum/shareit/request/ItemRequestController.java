@@ -3,27 +3,22 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestInfoDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
 
     @PostMapping("/requests")
-    public ResponseEntity<ItemRequestDto> addRequest(@RequestBody @Valid ItemRequestDto itemRequestDto,
-                                                 @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ResponseEntity<ItemRequestDto> addRequest(@RequestBody ItemRequestDto itemRequestDto,
+                                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("POST /requests");
         log.debug("X-Sharer-User-Id: {}", userId);
 
@@ -35,7 +30,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<List<ItemRequestInfoDto>> getAllUserRequests(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ResponseEntity<List<ItemRequestInfoDto>> getAllUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("GET /requests");
         log.debug("X-Sharer-User-Id: {}", userId);
 
@@ -43,9 +38,9 @@ public class ItemRequestController {
     }
 
     @GetMapping("/requests/all")
-    public ResponseEntity<List<ItemRequestInfoDto>> getAllOtherUsersRequests(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
-                                                                   @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-                                                                             @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+    public ResponseEntity<List<ItemRequestInfoDto>> getAllOtherUsersRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                                   @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                                             @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.debug("GET /requests/all?from={from}&size={size}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("from: {}", from);
@@ -56,7 +51,7 @@ public class ItemRequestController {
 
     @GetMapping("/requests/{requestId}")
     public ResponseEntity<ItemRequestInfoDto> getRequestById(@PathVariable Long requestId,
-                                                         @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                         @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("GET /requests/{requestId}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("requestId: {}", userId);

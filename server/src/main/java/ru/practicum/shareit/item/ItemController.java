@@ -8,8 +8,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,9 +18,9 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/items/{itemId}/comment")
-    public ResponseEntity<CommentDto> addCommentItem(@RequestBody @Valid CommentDto commentDto,
-                                                  @PathVariable @NotNull Long itemId,
-                                                  @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ResponseEntity<CommentDto> addCommentItem(@RequestBody CommentDto commentDto,
+                                                  @PathVariable Long itemId,
+                                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("POST /items/{itemId}/comment");
         log.debug("X-Sharer-User-Id: {}", userId);
 
@@ -30,8 +28,8 @@ public class ItemController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity<ItemDto> addItem(@RequestBody @Valid ItemDto itemDto,
-                                        @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ResponseEntity<ItemDto> addItem(@RequestBody ItemDto itemDto,
+                                        @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("POST /items request");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("itemDto.getId(): {}", itemDto.getId());
@@ -41,7 +39,7 @@ public class ItemController {
 
     @PatchMapping("/items/{itemId}")
     public ResponseEntity<ItemDto> updateItem(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
-                                                  @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("PATCH /items request");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("itemId: {}", itemId);
@@ -51,7 +49,7 @@ public class ItemController {
 
     @GetMapping("/items/{itemId}")
     public ResponseEntity<ItemInfoDto> getItem(@PathVariable long itemId,
-                                               @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("GET /items/{itemId} request");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("itemId: {}", itemId);
@@ -60,7 +58,7 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<List<ItemInfoDto>> getAllUserItems(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ResponseEntity<List<ItemInfoDto>> getAllUserItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("GET /items request");
         log.debug("X-Sharer-User-Id: {}", userId);
 
@@ -69,7 +67,7 @@ public class ItemController {
 
     @GetMapping("/items/search")
     public ResponseEntity<List<ItemDto>> getItemsBySearch(@RequestParam(value = "text") String text,
-                                                       @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                       @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.debug("GET /items/search?text={text}");
         log.debug("X-Sharer-User-Id: {}", userId);
         log.debug("text: {}", text);

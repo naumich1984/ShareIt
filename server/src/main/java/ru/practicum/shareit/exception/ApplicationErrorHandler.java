@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolationException;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -45,14 +44,5 @@ public class ApplicationErrorHandler {
         log.debug("stacktrace ошибки:{}", e.getStackTrace());
 
         return Map.of("Ошибка:", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "ConstraintViolationException")
-    public Map<String, String> handleConstraintViolationException(final ConstraintViolationException e) {
-        log.debug("Ошибка сервера:{}", e.getMessage());
-        log.debug("stacktrace ошибки:{}", e.getStackTrace());
-
-        return Map.of("Ошибка сервера", e.getMessage());
     }
 }

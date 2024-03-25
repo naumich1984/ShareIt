@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 @Entity
 @Table(name = "users")
@@ -23,6 +22,5 @@ public class User {
     private String name;
 
     @Column(name = "email", nullable = false, length = 512)
-    @Email(message = "email should exists @ symbol")
     private String email;
 }
