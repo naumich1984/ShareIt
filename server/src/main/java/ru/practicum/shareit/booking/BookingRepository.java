@@ -64,7 +64,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             " and b.status in ?2 order by b.start ")
     Page<Booking> findNextItemBooking(Long itemId, List<BookingStatus> workedStatuses, Pageable pageable);
 
-    @Query("select b from Booking b where b.end <= now() and b.item.id = ?1 and b.booker.id = ?2 order by b.end desc ")
+    @Query("select b from Booking b where b.end < now() and b.item.id = ?1 and b.booker.id = ?2 and b.status = ?3 ")
     Page<Booking> findLastFinishedBookingByItemIdAndUserId(Long itemId, Long userId, BookingStatus name, Pageable pageable);
 
 }
