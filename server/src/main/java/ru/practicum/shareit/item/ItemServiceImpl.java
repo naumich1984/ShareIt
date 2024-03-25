@@ -138,6 +138,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment addCommentItem(CommentDto comment, Long itemId, Long userId) {
         log.debug("addCommentItem");
         User user = userService.getUser(userId);
