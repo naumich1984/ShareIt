@@ -52,11 +52,12 @@ public class ItemMapper {
 
     public static Comment toComment(CommentDto commentDto, Item item, User user) {
 
-        return new Comment(null,
-                commentDto.getText(),
-                Item.builder().id(item.getId()).build(),
-                user,
-                LocalDateTime.now());
+        return  Comment.builder()
+                .text(commentDto.getText())
+                .item(Item.builder().id(item.getId()).build())
+                .author(user)
+                .created(LocalDateTime.now())
+                .build();
     }
 
     public static CommentDto toCommentDto(Comment comment) {
